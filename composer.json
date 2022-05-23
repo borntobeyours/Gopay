@@ -1,0 +1,54 @@
+{
+    "name": "borntobeyours/gopay",
+    "description": "Unofficial Gopay API Wrapper for Laravel Framework",
+    "keywords": [
+        "borntobeyours",
+        "gopay"
+    ],
+    "homepage": "https://github.com/borntobeyours/gopay",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "borntobeyours",
+            "email": "borntobeyours@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0|^8.1",
+        "illuminate/support": "^7.0|^8.0|^9.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Borntobeyours\\Gopay\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Borntobeyours\\Gopay\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Borntobeyours\\Gopay\\GopayServiceProvider"
+            ],
+            "aliases": {
+                "Gopay": "Borntobeyours\\Gopay\\GopayFacade"
+            }
+        }
+    }
+}
