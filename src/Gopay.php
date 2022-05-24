@@ -4,27 +4,77 @@ namespace Borntobeyours\Gopay;
 
 class Gopay
 {
-    const API_URL = 'https://api.gojekapi.com';
-    const API_GOID = 'https://goid.gojekapi.com';
-    const API_CUSTOMER = 'https://customer.gopayapi.com';
-	
-    const clientId = 'gojek:consumer:app';
-    const clientSecret = 'pGwQ7oi8bKqqwvid09UrjqpkMEHklb';
-    const appId = 'com.go-jek.ios';
-    const phoneModel = 'Apple, iPhone XS Max';
-    const phoneMake = 'Apple';
-    const osDevice = 'iOS, 14.8.1';
-    const xPlatform = 'iOS';
-    const appVersion = '4.38.1';
-    const gojekCountryCode = 'ID';
-    const userAgent = 'Gojek/4.38.1 (com.go-jek.ios; build:24785490; iOS 14.4.0) Alamofire/4.38.1';
+    public static function API_URL()
+    {
+        return config('gopay.API_URL');
+    }
+
+    public static function API_GOID()
+    {
+        return config('gopay.API_GOID');
+    }
+
+    public static function API_CUSTOMER()
+    {
+        return config('gopay.API_CUSTOMER');
+    }
+
+    public static function clientId()
+    {
+        return config('gopay.clientId');
+    }
+
+    public static function clientSecret()
+    {
+        return config('gopay.clientSecret');
+    }
+
+    public static function appId()
+    {
+        return config('gopay.appId');
+    }
+
+    public static function phoneModel()
+    {
+        return config('gopay.phoneModel');
+    }
+
+    public static function phoneMake()
+    {
+        return config('gopay.phoneMake');
+    }
+
+    public static function osDevice()
+    {
+        return config('gopay.osDevice');
+    }
+
+    public static function xPlatform()
+    {
+        return config('gopay.xPlatform');
+    }
+
+    public static function appVersion()
+    {
+        return config('gopay.appVersion');
+    }
+
+    public static function gojekCountryCode()
+    {
+        return config('gopay.gojekCountryCode');
+    }
+
+    public static function userAgent()
+    {
+        return config('gopay.userAgent');
+    }
     
     private $authToken, $uniqueId, $sessionId, $pin, $idKey;
     
-    public function __construct($authToken = false)
+    public function __construct($sessionId = false, $uniqueId = false, $authToken = false)
     {
-        $this->sessionId = '2FF46B03-11C0-4670-8B30-77423E3858B1'; // generated from self::uuidv4();
-        $this->uniqueId  = 'EF996F92-241B-4099-957E-94BE36F8E287'; // generated from self::uuidv4();
+        $this->sessionId = $sessionId; // generated from self::uuidv4();
+        $this->uniqueId  = $uniqueId; // generated from self::uuidv4();
         if ($authToken) {
             $this->authToken = $authToken;
         }
@@ -43,20 +93,20 @@ class Gopay
     public function loginRequest($phoneNumber)
     {
         $payload = array(
-            'client_id' => self::clientId,
-            'client_secret' => self::clientSecret,
+            'client_id' => self::clientId(),
+            'client_secret' => self::clientSecret(),
             'country_code' => '+62',
             'magic_link_ref' => null,
             'phone_number' => self::formatPhone($phoneNumber)
         );
-        return self::Request(self::API_GOID . '/goid/login/request', $payload, true);
+        return self::Request(self::API_GOID() . '/goid/login/request', $payload, true);
     }
     
     public function getAuthToken($otpToken, $otpCode)
     {
         $payload = array(
-            'client_id' => self::clientId,
-            'client_secret' => self::clientSecret,
+            'client_id' => self::clientId(),
+            'client_secret' => self::clientSecret(),
             'data' => array(
                 'otp_token' => $otpToken,
                 'otp' => $otpCode
@@ -64,42 +114,42 @@ class Gopay
             'grant_type' => 'otp'
         );
         
-        return self::Request(self::API_GOID . '/goid/token', $payload, true);
+        return self::Request(self::API_GOID() . '/goid/token', $payload, true);
     }
     
     public function getTransactionHistory($page = 1, $limit = 20)
     {
-        return self::Request(self::API_CUSTOMER . "/v1/users/transaction-history?page={$page}&limit={$limit}", false, true);
+        return self::Request(self::API_CUSTOMER() . "/v1/users/transaction-history?page={$page}&limit={$limit}", false, true);
     }
     
     public function getBalance()
     {
-        return self::Request(self::API_CUSTOMER . "/v1/payment-options/balances", false, true);
+        return self::Request(self::API_CUSTOMER() . "/v1/payment-options/balances", false, true);
     }
     
     public function getProfile()
     {
-        return self::Request(self::API_URL . "/gojek/v2/customer", false, true);
+        return self::Request(self::API_URL() . "/gojek/v2/customer", false, true);
     }
     
     public function goClubMembership()
     {
-        return self::Request(self::API_URL . "/goclub/v1/membership", false, true);
+        return self::Request(self::API_URL() . "/goclub/v1/membership", false, true);
     }
     
     public function paylaterProfile()
     {
-        return self::Request(self::API_URL . "/paylater/v1/user/profile", false, true);
+        return self::Request(self::API_URL() . "/paylater/v1/user/profile", false, true);
     }
     
     public function kycStatus()
     {
-        return self::Request(self::API_CUSTOMER . "/v1/users/kyc/status", false, true);
+        return self::Request(self::API_CUSTOMER() . "/v1/users/kyc/status", false, true);
     }
     
     public function isGojek($phoneNumber)
     {
-        return self::Request(self::API_CUSTOMER . "/v1/users/p2p-profile?phone_number=" . urlencode($phoneNumber) . "", false, true);
+        return self::Request(self::API_CUSTOMER() . "/v1/users/p2p-profile?phone_number=" . urlencode($phoneNumber) . "", false, true);
     }
     
     public function getQrid($phoneNumber)
@@ -125,12 +175,12 @@ class Gopay
                 'id_type' => 'GOPAY_QR_ID'
             )
         );
-        return self::Request(self::API_CUSTOMER . '/v1/funds/transfer', $payload, true);
+        return self::Request(self::API_CUSTOMER() . '/v1/funds/transfer', $payload, true);
     }
     
     public function getBankList()
     {
-        return self::Request(self::API_CUSTOMER . "/v1/banks?type=transfer&show_withdrawal_block_status=false", false, true);
+        return self::Request(self::API_CUSTOMER() . "/v1/banks?type=transfer&show_withdrawal_block_status=false", false, true);
     }
     
     public function transferBank($bankCode, $bankNumber, int $amount, $pin)
@@ -146,17 +196,17 @@ class Gopay
             'pin' => "$pin",
             'type' => 'transfer'
         );
-        return self::Request(self::API_CUSTOMER . '/v1/withdrawals', $payload, true);
+        return self::Request(self::API_CUSTOMER() . '/v1/withdrawals', $payload, true);
     }
     
     public function transferBankDetail($requestId)
     {
-        return self::Request(self::API_CUSTOMER . "/v1/withdrawals/detail?request_id={$requestId}", false, true);
+        return self::Request(self::API_CUSTOMER() . "/v1/withdrawals/detail?request_id={$requestId}", false, true);
     }
     
     public function isBank($bankCode, $bankNumber)
     {
-        return self::Request(self::API_CUSTOMER . "/v1/bank-accounts/validate?bank_code={$bankCode}&account_number={$bankNumber}", false, true);
+        return self::Request(self::API_CUSTOMER() . "/v1/bank-accounts/validate?bank_code={$bankCode}&account_number={$bankNumber}", false, true);
     }
     
     protected function formatPhone($phoneNumber, $areacode = '')
@@ -175,16 +225,16 @@ class Gopay
     protected function buildHeaders()
     {
         $headers = array(
-            'x-appid: ' . self::appId,
-            'x-phonemodel: ' . self::phoneModel,
-            'user-agent: ' . self::userAgent,
+            'x-appid: ' . self::appId(),
+            'x-phonemodel: ' . self::phoneModel(),
+            'user-agent: ' . self::userAgent(),
             'x-session-id: ' . $this->sessionId,
-            'x-phonemake: ' . self::phoneMake,
+            'x-phonemake: ' . self::phoneMake(),
             'x-uniqueid: ' . $this->uniqueId,
-            'x-deviceos: ' . self::osDevice,
-            'x-platform: ' . self::xPlatform,
-            'x-appversion: ' . self::appVersion,
-            'Gojek-Country-Code: ' . self::gojekCountryCode,
+            'x-deviceos: ' . self::osDevice(),
+            'x-platform: ' . self::xPlatform(),
+            'x-appversion: ' . self::appVersion(),
+            'Gojek-Country-Code: ' . self::gojekCountryCode(),
             'accept: */*',
             'content-type: application/json',
             'x-user-type: customer'
@@ -208,6 +258,10 @@ class Gopay
     public function getResponse($response, $key)
     {
         $json = json_decode($response, true);
+        if($json['success'] == false){
+            $data = 'error';
+            return $data;
+        }
         return $json['data'][$key];
     }
     
