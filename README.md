@@ -15,10 +15,7 @@ composer require borntobeyours/gopay
 ```
 
 ## Usage
-### 
-```php
-// Usage description here
-```
+Please see [DOCUMENTATION](DOCS.md) for details.
 
 ### Testing
 
